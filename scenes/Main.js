@@ -180,12 +180,16 @@ function loop() {
 }
 
 function updateShip() {
-    //move the spacechip based on the mouse input
-    var targetX = normalize(mousePos.x, -1, 1, -100, 100);
-    var targetY = normalize(mousePos.y, -1, 1, 25, 175);
-    //update location
-    spaceship.mesh.position.y = targetY;
+    var targetY = normalize(mousePos.y,-.75,.75,25, 175);
+	var targetX = normalize(mousePos.x,-.75,.75,-100, 100);
+	
+	// Move the plane at each frame by adding a fraction of the remaining distance
+    spaceship.mesh.position.y += (targetY-spaceship.mesh.position.y)*0.1;
     spaceship.mesh.position.x = targetX;
+
+	// Rotate the plane proportionally to the remaining distance
+	spaceship.mesh.rotation.z = (targetY-spaceship.mesh.position.y)*0.0128;
+	spaceship.mesh.rotation.x = (spaceship.mesh.position.y-targetY)*0.0064;
     
 }
 
