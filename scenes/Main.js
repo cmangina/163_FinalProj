@@ -79,13 +79,62 @@ function handleWindowResize() {
     camera.updateProjectionMatrix();
 }
 
+var hemisphereLight, shadowLight;
 
 function createLights() {
+    //a hemisphere light has a gradient where the first color is the sky 
+    //and the second is the ground. the third is the intensity
+    hemisphereLight = new THREE.HemisphereLight(0xAAAAAA, 0x000000, 0.9);
 
+    //a directional light
+    //define the direction, visible area of the projected shadow, and resolution of the shadow
+    shadowLight = new THREE.DirectionalLight(0xFFFFFF, 0.9);
+    shadowLight.position.set(150, 350, 350);
+    shadowLight.castShadow = true;
+    shadowLight.shadow.camera.left = -400;
+    shadowLight.shadow.camera.right = 400;
+    shadowLight.shadow.camera.top = 400;
+    shadowLight.shadow.camera.bottom = -400;
+    shadowLight.shadow.camera.near = 1;
+    shadowLight.shadow.camera.far = 1000;
+    shadowLight.shadow.mapSize.width = 2048;
+    shadowLight.shadow.mapSize.height = 2048;
+
+    scene.add(hemisphereLight);
+    scene.add(shadowLight);
 }
+
+Planet = function() {
+    //create the planet
+    var geometry = new THREE.CylinderGeomerty(600, 600, 800, 40, 10);
+
+    //spin it
+    geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/2));
+
+    //planet material, maybe shouldnt be transparent but well see
+    var mat = new THREE.MeshPhongMaterial({
+        color: Colors.darkPurple,
+        transparent:true,
+        opacity:.8,
+        shading:THREE.FlatShading,
+    });
+
+    //create the object and give it some shade
+    this.mesh = new THREE.Mesh(geometry, mat);
+    this.mesh.receiveShadow = true;
+}
+
+var planet;
+
 function createPlanet() {
+    planet = new Planet();
 
+    planet.mesh.position.y = -600;
+
+    scene.add(planet.mesh);
 }
+
+
 function createAtmosphere() {
 
 }
