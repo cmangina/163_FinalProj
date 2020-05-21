@@ -21,6 +21,9 @@ function init() {
     createPlanet();
     createAtmosphere();
 
+    //add listener for mosue
+    document.addEventListener('mousemove', handleMouseMove, false);
+
     //start a loop to change the positions of the objects and render the scene every frame
     loop();
 }
@@ -109,14 +112,14 @@ Planet = function() {
     var geometry = new THREE.CylinderGeometry(600, 600, 800, 40, 10);
 
     //spin it
-    geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/2));
+    geometry.applyMatrix4(new THREE.Matrix4().makeRotationX(-Math.PI/2));
 
     //planet material, maybe shouldnt be transparent but well see
     var mat = new THREE.MeshPhongMaterial({
         color: Colors.darkPurple,
         transparent:true,
         opacity:.8,
-        shading:THREE.FlatShading,
+        flatShading: true,
     });
 
     //create the object and give it some shade
@@ -138,12 +141,59 @@ function createPlanet() {
 function createAtmosphere() {
 
 }
-function createSpaceShip() {
 
+var Spaceship = function() {
+    this.mesh = new THREE.Object3D();
+    
+    var placeHolderGeo = new THREE.BoxGeometry(60, 50, 50, 1, 1, 1);
+    var placeHolderMat = new THREE.MeshPhongMaterial({
+        color:Colors.lightBlue, flatShading: true
+    });
+    var placeholder = new THREE.Mesh(placeHolderGeo, placeHolderMat);
+    placeholder.castShadow = true;
+    placeholder.receiveShadow = true;
+    this.mesh.add(placeholder);
+}
+var spaceship;
+function createSpaceShip() {
+    spaceship = new Spaceship();
+    spaceship.mesh.scale.set(.25, .25, .25);
+    spaceship.mesh.position.y = 100;
+    spaceship.mesh.position.z = -100;
+    scene.add(spaceship.mesh);
+}
+
+var mousePos = {x:0, y:0};
+function handleMouseMove(event) {
+    //normalizing mouse movement
+    var tx = -1 + (event.clientX/ WIDTH)*2;
+    var ty = 1 - (event.clientY/ HEIGHT)*2;
+    mousePos = {x: tx, y: ty};
 }
 
 function loop() {
     planet.mesh.rotation.z += .005;
     renderer.render(scene, camera);
+    updateShip();
+
     requestAnimationFrame(loop);
+}
+
+function updateShip() {
+    //move the spacechip based on the mouse input
+    var targetX = normalize(mousePos.x, -1, 1, -100, 100);
+    var targetY = normalize(mousePos.y, -1, 1, 25, 175);
+    //update location
+    spaceship.mesh.position.y = targetY;
+    spaceship.mesh.position.x = targetX;
+    
+}
+
+function normalize(v, vmin, vmax, tmin, tmax){
+    var nv = Math.max(Math.min(v,vmax), vmin);
+	var dv = vmax-vmin;
+	var pc = (nv-vmin)/dv;
+	var dt = tmax-tmin;
+	var tv = tmin + (pc*dt);
+	return tv;
 }
