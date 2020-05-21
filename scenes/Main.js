@@ -106,7 +106,7 @@ function createLights() {
 
 Planet = function() {
     //create the planet
-    var geometry = new THREE.CylinderGeomerty(600, 600, 800, 40, 10);
+    var geometry = new THREE.CylinderGeometry(600, 600, 800, 40, 10);
 
     //spin it
     geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/2));
@@ -129,7 +129,7 @@ var planet;
 function createPlanet() {
     planet = new Planet();
 
-    planet.mesh.position.y = -600;
+    planet.mesh.position.y = -550;
 
     scene.add(planet.mesh);
 }
@@ -143,5 +143,7 @@ function createSpaceShip() {
 }
 
 function loop() {
-
+    planet.mesh.rotation.z += .005;
+    renderer.render(scene, camera);
+    requestAnimationFrame(loop);
 }
