@@ -32,7 +32,7 @@ scene.add(light2);
 
 
 //var Rocket = function(){
-var Rocket = function(){
+	Rocket : function(){
 //this.mesh = new THREE.Object3D();
 var rocketModel= new THREE.Object3D();
 
@@ -68,7 +68,7 @@ var topRocket = new THREE.Mesh(rocketTop, rocketTopmaterial);
 topRocket.position.y= 10;
 //scene.add(topRocket);
 //this.mesh.add(topRocket);
-rocketModel.add(topRocket);
+rocketModel(topRocket);
 var rocketNose = new THREE.CylinderGeometry(6,10,10,8);
 var rocketNosematerial = new THREE.MeshPhongMaterial({color:0xff0000});
 var nose = new THREE.Mesh(rocketNose, rocketNosematerial);
@@ -129,7 +129,7 @@ scene.add(rocket.mesh);
 
 }
 */
-rocket = new Rocket();
+rocket = new rocketModel();
 scene.add(rocket);
 
 
