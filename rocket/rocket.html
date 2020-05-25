@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Lab 2: Intro to Three.js Part 2</title>
+		<style>
+			body { margin: 0; }
+			canvas { display: block; }
+		</style>
+	</head>
+	<body>
+		<script src="../three.js-master/build/three.js"></script>
+		<script 
+src="../three.js-master/examples/js/loaders/GLTFLoader.js"></script>
+		<script>
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera(75, 
+window.innerWidth/window.innerHeight, 0.1, 1000);
+      
+
+      var renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+      camera.position.z = 200;
+var light = new THREE.PointLight(0xffffff, 1, 1000);
+light.position.set(50, 50, 50);
+scene.add(light);
+
+
+//const geometry = new THREE.CylinderBufferGeometry(
+//  radiusTop, radiusBottom, height, radialSegments);
+    
+var rocketBody= new THREE.CylinderGeometry(11, 12, 20, 6);
+var rocketBodymaterial = new THREE.MeshPhongMaterial({color: 0x00ff00});
+var body = new THREE.Mesh(rocketBody, rocketBodymaterial);
+scene.add(body);
+      
+function animate() {
+requestAnimationFrame(animate);
+renderer.render(scene, camera);
+}
+animate();
+
+
+
+		</script>
+	</body>
+</html>
