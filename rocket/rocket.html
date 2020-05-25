@@ -26,15 +26,50 @@ var light = new THREE.PointLight(0xffffff, 1, 1000);
 light.position.set(50, 50, 50);
 scene.add(light);
 
+var light2 = new THREE.PointLight(0xffffff,1,1000);
+light2.position.set(-50,-50,-50);
+scene.add(light2);
 
 //const geometry = new THREE.CylinderBufferGeometry(
 //  radiusTop, radiusBottom, height, radialSegments);
     
-var rocketBody= new THREE.CylinderGeometry(11, 12, 20, 6);
+var rocketBody= new THREE.CylinderGeometry(11, 12, 20, 8);
 var rocketBodymaterial = new THREE.MeshPhongMaterial({color: 0x00ff00});
 var body = new THREE.Mesh(rocketBody, rocketBodymaterial);
 scene.add(body);
-      
+
+var rocketBase = new THREE.CylinderGeometry(12, 12,4,8);
+var rocketBasematerial = new THREE.MeshPhongMaterial({color:0x00ff00});
+var baseRocket = new THREE.Mesh(rocketBase, rocketBasematerial);
+baseRocket.position.y=-10;
+scene.add(baseRocket);
+
+
+var rocketBottom= new THREE.CylinderGeometry(10, 8, 4, 8);
+var rocketBottommaterial = new THREE.MeshPhongMaterial({color: 0xffff00});
+var bottom = new THREE.Mesh(rocketBottom, rocketBottommaterial);
+bottom.position.y= -14;
+scene.add(bottom);
+
+var rocketTop= new THREE.CylinderGeometry(10, 11, 8, 8);
+var rocketTopmaterial = new THREE.MeshPhongMaterial({color: 0xff0000});
+var topRocket = new THREE.Mesh(rocketTop, rocketTopmaterial);
+topRocket.position.y= 10;
+scene.add(topRocket);
+
+var rocketNose = new THREE.CylinderGeometry(6,10,10,8);
+var rocketNosematerial = new THREE.MeshPhongMaterial({color:0xff0000});
+var nose = new THREE.Mesh(rocketNose, rocketNosematerial);
+nose.position.y = 15;
+scene.add(nose);
+
+var rocketTip = new THREE.CylinderGeometry(0,6,5,8);
+var rocketTipmaterial = new THREE.MeshPhongMaterial({color:0xff0000});
+var tip = new THREE.Mesh(rocketTip, rocketTipmaterial);
+tip.position.y=22;
+scene.add(tip);
+
+
 function animate() {
 requestAnimationFrame(animate);
 renderer.render(scene, camera);
