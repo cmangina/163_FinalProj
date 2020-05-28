@@ -143,24 +143,99 @@ function createAtmosphere() {
 }
 
 var Spaceship = function() {
-    this.mesh = new THREE.Object3D();
+    //this.mesh = new THREE.Object3D();
+var rocketModel= new THREE.Object3D();
+
+
+//const geometry = new THREE.CylinderBufferGeometry(
+//  radiusTop, radiusBottom, height, radialSegments);
     
-    var placeHolderGeo = new THREE.BoxGeometry(60, 50, 50, 1, 1, 1);
-    var placeHolderMat = new THREE.MeshPhongMaterial({
-        color:Colors.lightBlue, flatShading: true
-    });
-    var placeholder = new THREE.Mesh(placeHolderGeo, placeHolderMat);
-    placeholder.castShadow = true;
-    placeholder.receiveShadow = true;
-    this.mesh.add(placeholder);
+var rocketBody= new THREE.CylinderGeometry(11, 14, 20, 8);
+var rocketBodymaterial = new THREE.MeshPhongMaterial({color: 0x00ff00});
+var body = new THREE.Mesh(rocketBody, rocketBodymaterial);
+//scene.add(body);
+
+//this.mesh.add(body);
+rocketModel.add(body);
+var rocketBase = new THREE.CylinderGeometry(13, 12,4,8);
+var rocketBasematerial = new THREE.MeshPhongMaterial({color:0x00ff00});
+var baseRocket = new THREE.Mesh(rocketBase, rocketBasematerial);
+baseRocket.position.y=-10;
+//scene.add(baseRocket);
+//this.mesh.add(baseRocket); 
+rocketModel.add(baseRocket);
+var rocketBottom= new THREE.CylinderGeometry(10, 8, 4, 8);
+var rocketBottommaterial = new THREE.MeshPhongMaterial({color: 0xffff00});
+var bottom = new THREE.Mesh(rocketBottom, rocketBottommaterial);
+bottom.position.y= -14;
+//scene.add(bottom);
+//this.mesh.add(bottom);
+rocketModel.add(bottom);
+
+var rocketTop= new THREE.CylinderGeometry(10, 11, 8, 8);
+var rocketTopmaterial = new THREE.MeshPhongMaterial({color: 0xff0000});
+var topRocket = new THREE.Mesh(rocketTop, rocketTopmaterial);
+topRocket.position.y= 10;
+//scene.add(topRocket);
+//this.mesh.add(topRocket);
+rocketModel.add(topRocket);
+var rocketNose = new THREE.CylinderGeometry(6,10,10,8);
+var rocketNosematerial = new THREE.MeshPhongMaterial({color:0xff0000});
+var nose = new THREE.Mesh(rocketNose, rocketNosematerial);
+nose.position.y = 17;
+//scene.add(nose);
+//this.mesh.add(nose);
+rocketModel.add(nose);
+
+var rocketTip = new THREE.CylinderGeometry(1,6,5,8);
+var rocketTipmaterial = new THREE.MeshPhongMaterial({color:0xff0000});
+var tip = new THREE.Mesh(rocketTip, rocketTipmaterial);
+tip.position.y=24;
+//scene.add(tip);
+//this.mesh.add(tip);
+rocketModel.add(tip);
+//const geometry = new THREE.BoxBufferGeometry(width, height, depth);
+// depth = thickness of wing 
+var wing1 = new THREE.BoxGeometry(20,10,3);
+wing1.vertices[4].y -= 8; //should make height decrease 
+wing1.vertices[5].y -= 8;     
+wing1.vertices[6].y -= 5; 
+wing1.vertices[7].y -= 5;
+wing1.vertices[1].y += 5;
+wing1.vertices[3].y +=5;
+
+//right wing 
+var wingMaterial = new THREE. MeshPhongMaterial({color:0x0ff000});
+var one = new THREE.Mesh(wing1, wingMaterial);
+one.position.x = 20;
+one.position.y =-5;
+//rotate around y-axis
+one.rotation.y = (Math.PI/180)*150; //change from degress to radians
+//scene.add(one);
+//this.mesh.add(one);
+rocketModel.add(one);
+
+
+/*left wing*/
+var wingMaterial2= new THREE. MeshPhongMaterial({color:0x0ff000});
+var two = new THREE.Mesh(wing1, wingMaterial2);
+two.position.x =-22;
+two.position.y = -5;
+//two.rotation.y = (Math.PI/180)*120;
+//scene.add(two);
+//this.mesh.add(two);
+
+rocketModel.add(two);
+return rocketModel;
 }
 var spaceship;
 function createSpaceShip() {
     spaceship = new Spaceship();
-    spaceship.mesh.scale.set(.25, .25, .25);
-    spaceship.mesh.position.y = 100;
-    spaceship.mesh.position.z = -100;
-    scene.add(spaceship.mesh);
+    spaceship.scale.set(.25, .25, .25);
+    spaceship.position.y = 100;
+    spaceship.position.z = -100;
+    spaceship.rotation.z = 1.5708;
+    scene.add(spaceship);
 }
 
 var mousePos = {x:0, y:0};
@@ -184,12 +259,12 @@ function updateShip() {
 	var targetX = normalize(mousePos.x,-.75,.75,-100, 100);
 	
 	// Move the plane at each frame by adding a fraction of the remaining distance
-    spaceship.mesh.position.y += (targetY-spaceship.mesh.position.y)*0.1;
-    spaceship.mesh.position.x = targetX;
+    spaceship.position.y += (targetY-spaceship.position.y)*0.1;
+    spaceship.position.x = targetX;
 
 	// Rotate the plane proportionally to the remaining distance
-	spaceship.mesh.rotation.z = (targetY-spaceship.mesh.position.y)*0.0128;
-	spaceship.mesh.rotation.x = (spaceship.mesh.position.y-targetY)*0.0064;
+	spaceship.rotation.z = (targetY-spaceship.position.y)*0.0128 - 1.5708;
+	spaceship.rotation.x = (spaceship.position.y-targetY)*0.0064;
     
 }
 
