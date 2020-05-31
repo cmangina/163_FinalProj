@@ -20,6 +20,7 @@ function init() {
     createSpaceShip();
     createPlanet();
     createAtmosphere();
+    createSpace();
 
     //add listener for mosue
     document.addEventListener('mousemove', handleMouseMove, false);
@@ -135,6 +136,50 @@ function createPlanet() {
     planet.mesh.position.y = -550;
 
     scene.add(planet.mesh);
+}
+
+//Create indivdual background asteroids
+Asteroid = function(){
+    this.mesh = new THREE.Object3D();
+    var geo = new THREE.DodecahedronGeometry(100,0);
+    var mat = new THREE.MeshPhongMaterial({color: 0x707070});
+    var m = new THREE.Mesh(geo,mat);
+
+    m.position.y = Math.random()*10;
+	m.position.z = Math.random()*10;
+	m.rotation.z = Math.random()*Math.PI*2;
+	m.rotation.y = Math.random()*Math.PI*2;
+    m.scale.set(0.9,0.9,0.9);
+
+    this.mesh.add(m);
+}
+
+//Create the background mesh filled with multiple asteroids
+spaceBackground = function(){
+    this.mesh = new THREE.Object3D();
+    this.nAsteroids = 20;
+    var stepAngle = Math.PI*2/this.nAsteroids;
+
+    for(var i = 0; i < this.nAsteroids; i++){
+        var roid = new Asteroid();
+        var angle = stepAngle*i;
+        var height = 750 + Math.random()*200;
+        roid.mesh.position.y = Math.sin(angle) * height;
+        roid.mesh.position.x = Math.cos(angle) * height;
+        roid.mesh.rotation.z = angle + Math.PI/2
+        roid.mesh.position.z = -400 - Math.random() * 400;
+        var size = Math.floor((Math.random() * 1.5) + 0.1);
+        roid.mesh.scale.set(size,size,size);
+        this.mesh.add(roid.mesh);
+    }
+}
+
+//Create the background
+var space;
+function createSpace(){
+    space = new spaceBackground();
+    space.mesh.position.y = -600;
+    scene.add(space.mesh);
 }
 
 //Individual particle
@@ -289,6 +334,10 @@ rocketModel.add(tail);
 
 var c = new spaceshipTrail;
 rocketModel.add(c.mesh);
+
+// var asteroid = new Asteroid;
+// asteroid.mesh.position.x = 70;
+// rocketModel.add(asteroid.mesh);
 
 return rocketModel;
 }
