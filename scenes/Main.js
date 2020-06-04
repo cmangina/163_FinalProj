@@ -7,6 +7,56 @@ var Colors = {
     black: 0x040404,
 }
 
+////
+var game;
+var deltaTime =0;
+var enemiesStack =[];
+
+
+function intialGameState(){
+game ={
+	distance :0,
+spaceshipInitialHeight: 100,
+spaceshipAmpHeight: 50,
+planeColSpeedX:0,
+planeColSpeedY:0,
+
+enemyDistanceTolerance: 10,
+
+
+
+
+
+
+
+
+
+
+
+	level:1,
+	planetRadius: 500,
+
+
+
+	status:" in play",
+
+
+
+
+
+
+
+
+
+
+
+
+};
+
+
+}
+
+
 window.addEventListener('load', init, false);
 
 function init() {
@@ -351,6 +401,103 @@ function createSpaceShip() {
     spaceship.rotation.z = 1.5708;
     scene.add(spaceship);
 }
+///adding some stuff
+//testing making enemies 
+var Enemy = function(){
+
+var geometryEnemy = new THREE.TetrahedronGeometry(8,2);
+var matEnemy = new MeshPhongMaterial({ color:0xf25346,shininess:0,flatShading:true});
+
+var meshEnemy= new THREE.Mesh(geometryEnemy, matEnemy);
+meshEnemy.castShadow = true;
+meshEnemy.angle=0;
+meshEnemy.dist =0;
+
+}
+
+EnemyCount = function(){
+var enemyObj = new THREE.Object3D();
+enemyObj.enemiesOut = [];
+
+}	
+EnemyCount.spawnEnemies = function(){
+var totEnemy = game.level;
+
+for (var n=0;n<totEnemy; n++){
+    var enemy;
+    if ( enemiesStack.length){
+       enemy = enemiesStack.pop();
+
+}
+else{
+enemy= new Enemy();
+}
+enemy.angle = -(n*0.1);
+enemy.distance = game.planetRadius + game.spaceshipInitialHeight +( -1 + Math.random() *2)* (game.spaceshipAmpHeight-20);
+enemy.position.y = -game.planetRadius + Math.sin(enemy.angle)* enemy.distance;
+enemy.position.x = Math.cos( enemy.angle) *enemy.distance;
+
+enemyObj.add(enemy);
+enemyObj.enemiesOut.push(enemy);
+
+
+
+}
+}
+ 
+EnemyCount.rotateEnemy = function(){
+
+for( var i = 0; i<enemyObj.enemiesOut.length;i++){
+
+    var enemy = enememyObj.enemiesOut[i];
+    enemy.angle += game.speed*deltaTime* game.enemySpeed;
+    if (enemy.angle > Math.Pi*2) 
+	enemy.angle -= Math.PI*2;
+
+	enemy.position.x = Math.cos(enemy.angle)* eneemy.distance;
+	enemy.position.y = -game.planetRadius + Math.sin(enemy.angle)* enemy.distance;
+	enemy.rotation.z += Math.random() *.5;
+	enemy.rotation.y = Math.random() *.5;
+
+        
+	var changePos = Spaceship.position.clone().sub(enemy.position.clone());
+	var len = changePos.length();
+	if( len < game.enemyDistanceTolerance){
+          //rticleCount.spawnparticles(enemy.position.clone(), 10, 0xff0000,3);
+	  enemiesStack.unshift( enemyObj.enemiesOut.splice(i,1)[0]);
+		
+          enemyObj.remove(enemy);
+	  game.spaceshipColSpeedX = 100* changePos.x/len;
+	  game.spaceshipColSpeedY = 100* changePos.y/len;
+	  ambientLight.intensity =3;
+	  i--;
+
+	} else if( enemy.angle> Math.PI){
+
+          enemiesStack.unshift(enemyObj.enemiesOut.splice(i,1)[0]);
+	  enemyObj.remove( enemy);
+	  i--;
+
+
+	}
+
+
+
+}
+
+
+
+}	
+
+function createEnemy(){
+for (var i =0; i<20; i++){
+var enemy = new Enemy();
+enemiesStack.push(enemy);
+
+}
+enemyCount = new EnemyCount();
+scene.add(enemyCount);
+}
 
 var mousePos = {x:0, y:0};
 function handleMouseMove(event) {
@@ -359,7 +506,7 @@ function handleMouseMove(event) {
     var ty = 1 - (event.clientY/ HEIGHT)*2;
     mousePos = {x: tx, y: ty};
 }
-
+//////////////////////////
 function loop() {
     planet.mesh.rotation.z += .005;
     renderer.render(scene, camera);
