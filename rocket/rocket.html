@@ -84,23 +84,50 @@ tip.position.y=24;
 //scene.add(tip);
 //this.mesh.add(tip);
 rocketModel.add(tip);
+
+//trying something diff here
+var propeller = new THREE.CylinderGeometry(4,4,14,8);
+var propMat= new THREE.MeshPhongMaterial({color:0x0000ff});
+var prop = new THREE.Mesh(propeller, propMat);
+prop.position.x=(15);
+prop.position.y=-6;
+rocketModel.add(prop);
+
+var prop2= new THREE.Mesh(propeller,propMat);
+prop2.position.x=-14;
+prop2.position.y=-6;
+rocketModel.add(prop2);
+
+var propTop = new THREE.CylinderGeometry(2,3,2,8);
+var propTopMat = new THREE.MeshPhongMaterial({color:0xff0000});
+var pTop = new THREE.Mesh(propTop,propTopMat);
+pTop.position.x = 15;
+pTop.position.y = 2;
+rocketModel.add(pTop);
+
+var pTopLeft = new THREE.Mesh(propTop, propTopMat);
+pTopLeft.position.x=-14;
+pTopLeft.position.y=2;
+rocketModel.add(pTopLeft);
+
 //const geometry = new THREE.BoxBufferGeometry(width, height, depth);
 // depth = thickness of wing 
-var wing1 = new THREE.BoxGeometry(20,10,3);
+var wing1 = new THREE.BoxGeometry(20,12,3);
 wing1.vertices[4].y -= 8; //should make height decrease 
 wing1.vertices[5].y -= 8;     
 wing1.vertices[6].y -= 5; 
 wing1.vertices[7].y -= 5;
-wing1.vertices[1].y += 5;
-wing1.vertices[3].y +=5;
+//wing1.vertices[1].y += 5;
+//wing1.vertices[3].y +=5;
+
 
 //right wing 
 var wingMaterial = new THREE. MeshPhongMaterial({color:0x0ff000});
 var one = new THREE.Mesh(wing1, wingMaterial);
 one.position.x = 20;
-one.position.y =-5;
+one.position.y =-4;
 //rotate around y-axis
-one.rotation.y = (Math.PI/180)*150; //change from degress to radians
+one.rotation.y = (Math.PI/180)*180; //change from degress to radians
 //scene.add(one);
 //this.mesh.add(one);
 rocketModel.add(one);
@@ -110,7 +137,7 @@ rocketModel.add(one);
 var wingMaterial2= new THREE. MeshPhongMaterial({color:0x0ff000});
 var two = new THREE.Mesh(wing1, wingMaterial2);
 two.position.x =-22;
-two.position.y = -5;
+two.position.y = -4;
 //two.rotation.y = (Math.PI/180)*120;
 //scene.add(two);
 //this.mesh.add(two);
@@ -130,11 +157,13 @@ scene.add(rocket.mesh);
 }
 */
 rocket = new Rocket();
+
 scene.add(rocket);
 
 
 function animate() {
 requestAnimationFrame(animate);
+rocket.rotation.y +=.05;
 renderer.render(scene, camera);
 }
 animate();
