@@ -13,7 +13,7 @@ var deltaTime = 0;
 var enemiesStack = [];
 
 
-function intialGameState() {
+
     game = {
         distance: 0,
         spaceshipInitialHeight: 100,
@@ -29,7 +29,7 @@ function intialGameState() {
         status: " in play",
 
     };
-}
+
 
 
 window.addEventListener('load', init, false);
@@ -46,6 +46,7 @@ function init() {
     createPlanet();
     createAtmosphere();
     createSpace();
+    createEnemy();
 
     //add listener for mosue
     document.addEventListener('mousemove', handleMouseMove, false);
@@ -184,7 +185,7 @@ spaceBackground = function () {
     this.mesh = new THREE.Object3D();
     this.nAsteroids = 20;
     var stepAngle = Math.PI * 2 / this.nAsteroids;
-
+    console.log("in space background");
     for (var i = 0; i < this.nAsteroids; i++) {
         var roid = new Asteroid();
         var angle = stepAngle * i;
@@ -378,26 +379,35 @@ function createSpaceShip() {
 }
 ///adding some stuff
 //testing making enemies 
-var Enemy = function () {
+Enemy = function () {
+    this.mesh = new THREE.Object3D();
 
     var geometryEnemy = new THREE.TetrahedronGeometry(8, 2);
-    var matEnemy = new MeshPhongMaterial({ color: 0xf25346, shininess: 0, flatShading: true });
+    var matEnemy = new THREE.MeshPhongMaterial({ color: 0xf25346, shininess: 0, flatShading: true });
 
-    this.mesh = new THREE.Mesh(geometryEnemy, matEnemy);
-    this.mesh.castShadow = true;
-    this.angle = 0;
-    this.dist = 0;
+    var enemyMesh = new THREE.Mesh(geometryEnemy, matEnemy);
+
+    this.mesh.add(enemyMesh);
 
 }
+var test;
+function createEnemy() {
 
-EnemyCount = function () {
+    test = new Enemy();
+    //enemy.scale.set(.25, .25, .25);
+    test.mesh.position.y = 100;
+    test.mesh.position.z = -100;
+    test.mesh.position.x = 50;
+    test.mesh.rotation.z = 1.5708;
+    console.log(test.mesh)
+    scene.add(test.mesh);
+}
     var enemyObj = new THREE.Object3D();
     enemyObj.enemiesOut = [];
 
-}
-EnemyCount.spawnEnemies = function () {
-    var totEnemy = game.level;
-
+spawnEnemies = function () {
+    var totEnemy = 5;
+    console.log("in spawnenemies");
     for (var n = 0; n < totEnemy; n++) {
         var enemy;
         if (enemiesStack.length) {
@@ -409,16 +419,21 @@ EnemyCount.spawnEnemies = function () {
         }
         enemy.angle = -(n * 0.1);
         enemy.distance = game.planetRadius + game.spaceshipInitialHeight + (-1 + Math.random() * 2) * (game.spaceshipAmpHeight - 20);
-        enemy.mesh.position.y = -game.planetRadius + Math.sin(enemy.angle) * enemy.distance;
-        enemy.mesh.position.x = Math.cos(enemy.angle) * enemy.distance;
-
-        this.mesh.add(enemy.mesh);
+        console.log(window.innerWidth + " " + window.innerHeight);
+        enemy.mesh.position.y = 50//-game.planetRadius + Math.sin(enemy.angle) * enemy.distance;
+        enemy.mesh.position.x = 50//Math.cos(enemy.angle) * enemy.distance;
+        enemy.mesh.position.z = -100;
+        console.log(enemy.mesh.position);
+        enemyObj.add(enemy.mesh);
         enemyObj.enemiesOut.push(enemy);
 
     }
 }
 
-EnemyCount.rotateEnemy = function () {
+//spawnEnemies();
+
+
+rotateEnemy = function () {
 
     for (var i = 0; i < enemyObj.enemiesOut.length; i++) {
 
@@ -455,15 +470,17 @@ EnemyCount.rotateEnemy = function () {
     }
 }
 
-function createEnemy() {
-    for (var i = 0; i < 20; i++) {
-        var enemy = new Enemy();
-        enemiesStack.push(enemy);
+// function createEnemy() {
+//     for (var i = 0; i < 20; i++) {
+//         var enemy = new Enemy();
+//         enemiesStack.push(enemy);
 
-    }
-    enemyCount = new EnemyCount();
-    scene.add(enemyCount.mesh);
-}
+//     }
+//     enemyCount = new EnemyCount();
+//     scene.add(enemyCount.mesh);
+// }
+
+// createEnemy();
 
 var mousePos = { x: 0, y: 0 };
 function handleMouseMove(event) {
@@ -486,8 +503,9 @@ function updateShip() {
     var targetX = normalize(mousePos.x, -.75, .75, -100, 100);
 
     // Move the plane at each frame by adding a fraction of the remaining distance
-    spaceship.position.y += (targetY - spaceship.position.y) * 0.1;
+    spaceship.position.y += (targetY - spaceship.position.y) * 0.05;
     spaceship.position.x = targetX;
+    //console.log(spaceship.position);
 
     // Rotate the plane proportionally to the remaining distance
     spaceship.rotation.z = (targetY - spaceship.position.y) * 0.0128 - 1.5708;
