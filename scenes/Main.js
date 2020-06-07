@@ -183,11 +183,13 @@ Asteroid = function () {
 //Create the background mesh filled with multiple asteroids
 spaceBackground = function () {
     this.mesh = new THREE.Object3D();
-    this.nAsteroids = 20;
-    var stepAngle = Math.PI * 2 / this.nAsteroids;
+    this.asteroidAmount = 30;
+    this.asteroidArray = [];
+    var stepAngle = Math.PI * 2 / this.asteroidAmount;
     console.log("in space background");
-    for (var i = 0; i < this.nAsteroids; i++) {
+    for (var i = 0; i < this.asteroidAmount; i++) {
         var roid = new Asteroid();
+        this.asteroidArray.push(roid);
         var angle = stepAngle * i;
         var height = 750 + Math.random() * 200;
         roid.mesh.position.y = Math.sin(angle) * height;
@@ -204,7 +206,7 @@ spaceBackground = function () {
 var space;
 function createSpace() {
     space = new spaceBackground();
-    space.mesh.position.y = -600;
+    space.mesh.position.y = -700;
     scene.add(space.mesh);
 }
 
@@ -492,9 +494,9 @@ function handleMouseMove(event) {
 //////////////////////////
 function loop() {
     planet.mesh.rotation.z += .005;
+    space.mesh.rotation.z += 0.01;
     renderer.render(scene, camera);
     updateShip();
-
     requestAnimationFrame(loop);
 }
 
