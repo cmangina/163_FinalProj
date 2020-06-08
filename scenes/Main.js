@@ -3,7 +3,7 @@ var Colors = {
     darkBlue: 0x2b2662,
     lightBlue: 0x4c63d9,
     lightPurple: 0x543972,
-    darkPurple: 0x44316c,
+    lightBrown: 0xa5682a,
     black: 0x040404,
 }
 
@@ -44,7 +44,6 @@ function init() {
     //add objects
     createSpaceShip();
     createPlanet();
-    createAtmosphere();
     createSpace();
     createEnemy();
 
@@ -68,7 +67,7 @@ function createScene() {
     scene = new THREE.Scene();
 
     //add fog effecet
-    scene.fog = new THREE.Fog(0x543972, 100, 950);
+    scene.fog = new THREE.Fog(0xF2F2F2, 100, 950);
 
     //camera
     aspectRatio = WIDTH / HEIGHT;
@@ -143,9 +142,9 @@ Planet = function () {
 
     //planet material, maybe shouldnt be transparent but well see
     var mat = new THREE.MeshPhongMaterial({
-        color: Colors.darkPurple,
-        transparent: true,
-        opacity: .8,
+        color: Colors.lightBrown,
+        //transparent: true,
+        //opacity: .8,
         flatShading: true,
     });
 
@@ -168,14 +167,14 @@ function createPlanet() {
 Asteroid = function () {
     this.mesh = new THREE.Object3D();
     var geo = new THREE.DodecahedronGeometry(100, 0);
-    var mat = new THREE.MeshPhongMaterial({ color: 0x707070 });
+    var mat = new THREE.MeshPhongMaterial({ color: 0x000000 });
     var m = new THREE.Mesh(geo, mat);
 
     m.position.y = Math.random() * 10;
     m.position.z = Math.random() * 10;
     m.rotation.z = Math.random() * Math.PI * 2;
     m.rotation.y = Math.random() * Math.PI * 2;
-    m.scale.set(0.9, 0.9, 0.9);
+    m.scale.set(0.7, 0.7, 0.7);
 
     this.mesh.add(m);
 }
@@ -183,7 +182,7 @@ Asteroid = function () {
 //Create the background mesh filled with multiple asteroids
 spaceBackground = function () {
     this.mesh = new THREE.Object3D();
-    this.asteroidAmount = 30;
+    this.asteroidAmount = 40;
     this.asteroidArray = [];
     var stepAngle = Math.PI * 2 / this.asteroidAmount;
     console.log("in space background");
@@ -191,7 +190,7 @@ spaceBackground = function () {
         var roid = new Asteroid();
         this.asteroidArray.push(roid);
         var angle = stepAngle * i;
-        var height = 750 + Math.random() * 200;
+        var height = 850 + Math.random() * 200;
         roid.mesh.position.y = Math.sin(angle) * height;
         roid.mesh.position.x = Math.cos(angle) * height;
         roid.mesh.rotation.z = angle + Math.PI / 2
@@ -202,13 +201,54 @@ spaceBackground = function () {
     }
 }
 
+//Create individual background star
+Star = function(){
+    this.mesh = new THREE.Object3D();
+    var starGeometry = new THREE.TetrahedronGeometry(100, 0);
+    var mat = new THREE.MeshPhongMaterial({color: 0xFFFFFF});
+    var starMesh = new THREE.Mesh(starGeometry, mat);
+
+    starMesh.position.y = (Math.random() * 1000) + 1;
+    starMesh.position.z = -((Math.random() * 10) + 1);
+    starMesh.rotation.z = Math.random() * Math.PI * 2;
+    starMesh.rotation.y = Math.random() * Math.PI * 2;
+    starMesh.scale.set(0.04,0.04,0.04);
+    this.mesh.add(starMesh);
+}
+
+//Create the star background mesh filled with multiple stars
+starBackground = function (){
+    this.mesh = new THREE.Object3D();
+    this.starAmount = 1000;
+    this.starArray = [];
+    var stepAngle = Math.PI * 2 / this.starAmount;
+    for(var i = 0; i < this.starAmount; i++){
+        var star = new Star();
+        this.starArray.push(star);
+        var angle = stepAngle * i;
+        var height = 750 + Math.random() * 200;
+        star.mesh.position.y = Math.sin(angle) * height;
+        star.mesh.position.x = Math.cos(angle) * height;
+        star.mesh.position.z = angle + Math.PI/2;
+        star.mesh.position.z = -800;
+        //var size = Math.floor((Math.random() * 1.0) + 0.3);
+        //star.mesh.scale.set(size,size,size);
+        this.mesh.add(star.mesh);
+    }
+}
+
 //Create the background
 var space;
+var space2;
 function createSpace() {
     space = new spaceBackground();
+    space2 = new starBackground();
     space.mesh.position.y = -700;
+    space2.mesh.position.y = -700;
     scene.add(space.mesh);
+    scene.add(space2.mesh);
 }
+
 
 //Individual particle
 spaceshipParticle = function () {
@@ -255,10 +295,6 @@ spaceshipTrail = function () {
         this.smokeTrail.push(smoke);
         this.mesh.add(smoke.mesh);
     }
-}
-
-function createAtmosphere() {
-
 }
 
 var Spaceship = function () {
@@ -383,15 +419,13 @@ function createSpaceShip() {
 //testing making enemies 
 Enemy = function () {
     this.mesh = new THREE.Object3D();
-
     var geometryEnemy = new THREE.TetrahedronGeometry(8, 2);
     var matEnemy = new THREE.MeshPhongMaterial({ color: 0xf25346, shininess: 0, flatShading: true });
-
     var enemyMesh = new THREE.Mesh(geometryEnemy, matEnemy);
-
     this.mesh.add(enemyMesh);
 
 }
+
 var test;
 function createEnemy() {
 
