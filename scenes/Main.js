@@ -404,8 +404,16 @@ function createEnemy() {
     console.log(test.mesh)
     scene.add(test.mesh);
 }
-    var enemyObj = new THREE.Object3D();
-    enemyObj.enemiesOut = [];
+    //var enemyObj = new THREE.Object3D();
+    //enemyObj.enemiesOut = [];
+     var enemiesStack =[];
+
+EnemyStack = function(){
+this.mesh = new THREE.Object3D();
+this.enemiesInPlay= [];
+
+}
+
 
 spawnEnemies = function () {
     var totEnemy = 5;
@@ -426,9 +434,10 @@ spawnEnemies = function () {
         enemy.mesh.position.x = 50//Math.cos(enemy.angle) * enemy.distance;
         enemy.mesh.position.z = -100;
         console.log(enemy.mesh.position);
-        enemyObj.add(enemy.mesh);
-        enemyObj.enemiesOut.push(enemy);
-
+        //nemyObj.add(enemy.mesh);
+        //enemyObj.enemiesOut.push(enemy);
+        this.mesh.add(enemy.mesh);
+	this.enemiesInPlay.push(enemy);
     }
 }
 
@@ -472,6 +481,34 @@ rotateEnemy = function () {
     }
 }
 
+/////// adding more code 
+EnemyStack = function(){
+this.mesh = new THREE.Object3D();
+this.enemiesInPlay= [];
+
+}
+
+//anothe create enemy funct to test 
+var enemyInArray;
+function createObstacle(){
+for ( var j =0; j<5;j++){
+var enemy = new Enemy();
+enemiesStack.push(enemy);
+
+
+
+
+}
+ enemyInArray = new EnemyStack();
+  spawnEnemies();
+scene.add(enemyInArray.mesh);
+
+}
+
+
+
+
+
 // function createEnemy() {
 //     for (var i = 0; i < 20; i++) {
 //         var enemy = new Enemy();
@@ -495,6 +532,11 @@ function handleMouseMove(event) {
 function loop() {
     planet.mesh.rotation.z += .005;
     space.mesh.rotation.z += 0.01;
+    test.mesh.rotation.z +=0.01;
+    //test.rotation.z +=0.01;
+    //enemyMesh.rotation.z += 0.05;
+    //enemyInArray.spawnEnemies();
+   
     renderer.render(scene, camera);
     updateShip();
     requestAnimationFrame(loop);
