@@ -283,7 +283,7 @@ spaceshipParticle = function () {
 
     // create a material; a simple white material will do the trick
     var mat = new THREE.MeshPhongMaterial({
-        color: Colors.white,
+        color: 0xff8855,
     });
 
     // create the mesh by cloning the geometry
@@ -312,7 +312,6 @@ spaceshipTrail = function () {
         } else {
             smoke.mesh.position.x = -Math.floor((Math.random() * 10) + 1);
         }
-
         this.smokeTrail.push(smoke);
         this.mesh.add(smoke.mesh);
     }
@@ -417,8 +416,8 @@ var Spaceship = function () {
     tail.position.y = -10;
     rocketModel.add(tail);
 
-    var c = new spaceshipTrail;
-    rocketModel.add(c.mesh);
+    rocketModel.trail = new spaceshipTrail;
+    rocketModel.add(rocketModel.trail.mesh);
 
     // var asteroid = new Asteroid;
     // asteroid.mesh.position.x = 70;
@@ -434,8 +433,10 @@ function createSpaceShip() {
     spaceship.position.y = 100;
     spaceship.position.z = -100;
     spaceship.rotation.z = 1.5708;
+    console.log(spaceship.mesh);
     scene.add(spaceship);
 }
+
 ///adding some stuff
 //testing making enemies 
 Enemy = function () {
@@ -610,12 +611,14 @@ function loop() {
 
     planet.mesh.rotation.z += .005;
     space.mesh.rotation.z += 0.01;
+    
     //test.mesh.rotation.z +=0.01;
     //test.rotation.z +=0.01;
     //enemyMesh.rotation.z += 0.05;
     //enemyInArray.spawnEnemies();
     updateShip();
     updateDist();
+    spaceship.trail.mesh.rotation.y += .2;
 
     if (Math.floor(game.distance)%game.distanceForEnnemiesSpawn == 0 
     && Math.floor(game.distance) > game.ennemyLastSpawn){
