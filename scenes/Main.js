@@ -10,21 +10,40 @@ var Colors = {
 ////
 var game;
 var deltaTime = 0;
-var enemiesStack = [];
-
+var enemyUnspawnedPool =[];
 
 
     game = {
+        speed: 0,
         distance: 0,
+        baseSpeed: .00035,
+        speedOverDist: 50, 
+
+        targetBaseSpeed: .00035,
+
+        planeSpeed: 0,
+        baseSpeed: 0,
+
+        planeMinSpeed: 1.2, 
+        planeMaxSpeed: 1.6,
+
         spaceshipInitialHeight: 100,
         spaceshipAmpHeight: 50,
+        planeColDisplaceX: 0,
         planeColSpeedX: 0,
+        planeColDisplaceY: 0,
         planeColSpeedY: 0,
 
         enemyDistanceTolerance: 10,
+        enemySpeed: .6,
+        ennemyLastSpawn: 0,
+        distanceForEnnemiesSpawn: 50,
 
         level: 1,
         planetRadius: 500,
+
+        
+
 
         status: " in play",
 
@@ -421,9 +440,7 @@ Enemy = function () {
     this.mesh = new THREE.Object3D();
     var geometryEnemy = new THREE.TetrahedronGeometry(8, 2);
     var matEnemy = new THREE.MeshPhongMaterial({ color: 0xf25346, shininess: 0, flatShading: true });
-    var enemyMesh = new THREE.Mesh(geometryEnemy, matEnemy);
-    this.mesh.add(enemyMesh);
-
+    this.mesh = new THREE.Mesh(geometryEnemy, matEnemy);
 }
 
 var test;
@@ -437,25 +454,30 @@ function createEnemy() {
     test.mesh.rotation.z = 1.5708;
     console.log(test.mesh)
     scene.add(test.mesh);
+    for(let i = 0; i < 10; i++){
+        var enemy = new Enemy();
+        enemyUnspawnedPool.push(enemy);
+    }
+    enemiesStack = new EnemyStack();
+    scene.add(enemiesStack.mesh);
 }
     //var enemyObj = new THREE.Object3D();
     //enemyObj.enemiesOut = [];
-     var enemiesStack =[];
 
 EnemyStack = function(){
-this.mesh = new THREE.Object3D();
-this.enemiesInPlay= [];
+    this.mesh = new THREE.Object3D();
+    this.enemiesInPlay= [];
 
 }
 
 
-spawnEnemies = function () {
+EnemyStack.spawnEnemies = function () {
     var totEnemy = 5;
     console.log("in spawnenemies");
     for (var n = 0; n < totEnemy; n++) {
         var enemy;
-        if (enemiesStack.length) {
-            enemy = enemiesStack.pop();
+        if (enemyUnspawnedPool.length) {
+            enemy = enemyUnspawnedPool.pop();
 
         }
         else {
@@ -471,18 +493,18 @@ spawnEnemies = function () {
         //nemyObj.add(enemy.mesh);
         //enemyObj.enemiesOut.push(enemy);
         this.mesh.add(enemy.mesh);
-	this.enemiesInPlay.push(enemy);
+	    this.enemiesInPlay.push(enemy);
     }
 }
 
 //spawnEnemies();
 
 
-rotateEnemy = function () {
+EnemyStack.prototype.rotateEnemy = function () {
 
-    for (var i = 0; i < enemyObj.enemiesOut.length; i++) {
+    for (var i = 0; i < this.enemiesInPlay.length; i++) {
 
-        var enemy = enememyObj.enemiesOut[i];
+        var enemy = this.enemiesInPlay[i];
         enemy.angle += game.speed * deltaTime * game.enemySpeed;
         if (enemy.angle > Math.Pi * 2)
             enemy.angle -= Math.PI * 2;
@@ -497,17 +519,18 @@ rotateEnemy = function () {
         var len = changePos.length();
         if (len < game.enemyDistanceTolerance) {
             //rticleCount.spawnparticles(enemy.position.clone(), 10, 0xff0000,3);
-            enemiesStack.unshift(enemyObj.enemiesOut.splice(i, 1)[0]);
+            enemyUnspawnedPool.unshift(this.enemiesInPlay.splice(i, 1)[0]);
 
             this.mesh.remove(enemy.mesh);
             game.spaceshipColSpeedX = 100 * changePos.x / len;
             game.spaceshipColSpeedY = 100 * changePos.y / len;
             ambientLight.intensity = 3;
+            console.log("you lost health");
             i--;
 
         } else if (enemy.angle > Math.PI) {
 
-            enemiesStack.unshift(enemyObj.enemiesOut.splice(i, 1)[0]);
+            enemyUnspawnedPool.unshift(this.enemiesInPlay.splice(i, 1)[0]);
             this.mesh.remove(enemy.mesh);
             i--;
 
@@ -515,45 +538,20 @@ rotateEnemy = function () {
     }
 }
 
-/////// adding more code 
-EnemyStack = function(){
-this.mesh = new THREE.Object3D();
-this.enemiesInPlay= [];
-
-}
-
 //anothe create enemy funct to test 
 var enemyInArray;
 function createObstacle(){
-for ( var j =0; j<5;j++){
-var enemy = new Enemy();
-enemiesStack.push(enemy);
+    for ( var j =0; j<5;j++){
+        var enemy = new Enemy();
+        enemiesStack.push(enemy);
+    }
 
 
-
-
-}
- enemyInArray = new EnemyStack();
-  spawnEnemies();
-scene.add(enemyInArray.mesh);
+    enemyInArray = new EnemyStack();
+    spawnEnemies();
+    scene.add(enemyInArray.mesh);
 
 }
-
-
-
-
-
-// function createEnemy() {
-//     for (var i = 0; i < 20; i++) {
-//         var enemy = new Enemy();
-//         enemiesStack.push(enemy);
-
-//     }
-//     enemyCount = new EnemyCount();
-//     scene.add(enemyCount.mesh);
-// }
-
-// createEnemy();
 
 var mousePos = { x: 0, y: 0 };
 function handleMouseMove(event) {
@@ -563,20 +561,10 @@ function handleMouseMove(event) {
     mousePos = { x: tx, y: ty };
 }
 //////////////////////////
-function loop() {
-    planet.mesh.rotation.z += .005;
-    space.mesh.rotation.z += 0.01;
-    test.mesh.rotation.z +=0.01;
-    //test.rotation.z +=0.01;
-    //enemyMesh.rotation.z += 0.05;
-    //enemyInArray.spawnEnemies();
-   
-    renderer.render(scene, camera);
-    updateShip();
-    requestAnimationFrame(loop);
-}
+
 
 function updateShip() {
+    game.planeSpeed = normalize(mousePos.x,-.5,.5,game.planeMinSpeed, game.planeMaxSpeed);
     var targetY = normalize(mousePos.y, -.75, .75, 25, 175);
     var targetX = normalize(mousePos.x, -.75, .75, -100, 100);
 
@@ -598,4 +586,40 @@ function normalize(v, vmin, vmax, tmin, tmax) {
     var dt = tmax - tmin;
     var tv = tmin + (pc * dt);
     return tv;
+}
+
+function updateDist(){
+    // console.log(game.distance);
+    // console.log(game.speed);
+    // console.log(deltaTime);
+    // console.log(game.speedOverDist);
+    game.distance += game.speed*deltaTime*game.speedOverDist;
+    console.log(game.distance);
+}
+
+function loop() {
+    planet.mesh.rotation.z += .005;
+    space.mesh.rotation.z += 0.01;
+    test.mesh.rotation.z +=0.01;
+    //test.rotation.z +=0.01;
+    //enemyMesh.rotation.z += 0.05;
+    //enemyInArray.spawnEnemies();
+    updateShip();
+    updateDist();
+
+    if (Math.floor(game.distance)%game.distanceForEnnemiesSpawn == 0 
+    && Math.floor(game.distance) > game.ennemyLastSpawn){
+        game.ennemyLastSpawn = Math.floor(game.distance);
+        console.log("in loop");
+        ennemiesStack.spawnEnnemies();
+    }
+
+    game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * .02;
+    game.speed = game.baseSpeed * game.planeSpeed;
+    console.log(game.speed);
+    enemiesStack.rotateEnemy();
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(loop);
+    
 }
