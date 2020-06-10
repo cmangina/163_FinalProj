@@ -19,3 +19,16 @@
 # only update certain aspects of the game if the game was not over. 
 # Once the game is over, I also add some text saying so, just so the player
 # knows for sure what happened. 
+
+
+#Charita Mangina:
+# I made the rocket using only the primitive shapes available to us
+# by three.js. The process was a little complex but overall fun. The two
+# main primitives the rocket is composed of are the Cylinder Geometry and 
+# the Box Geometry. By manuplulating the vertices for the Box Geometry, it 
+# allowed me to create the wings for the rocket and the position was adjusted
+# by shifting positions. The rocket itself was built from multiple Cyclinder
+# Geometry objects (ie. rocket body, base, tip , and nose). All the individual 
+# objects were encapsulated under a 3d object so we can move rocket as a whole.
+# I also helped create the enemy object using another Three.js primitive and this was 
+# to resembles asteroids the ship must avoid.
