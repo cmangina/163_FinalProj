@@ -13,7 +13,7 @@ var deltaTime = 0;
 var newTime = new Date().getTime();
 var oldTime = new Date().getTime();
 var enemyUnspawnedPool =[];
-
+var textMesh;
 
     game = {
         speed: 0,
@@ -44,10 +44,10 @@ var enemyUnspawnedPool =[];
         level: 1,
         planetRadius: 500,
 
-        
+        health: 100,
 
 
-        status: " in play",
+        status: "in play",
 
     };
 
@@ -67,7 +67,10 @@ function init() {
     createPlanet();
     createSpace();
     createEnemy();
-    addText();
+    var healthBarText = 'Health: ' + game.health;
+    addText(healthBarText);
+    console.log(scene);
+    
     //add listener for mosue
     document.addEventListener('mousemove', handleMouseMove, false);
 
@@ -529,6 +532,11 @@ EnemyStack.prototype.rotateEnemy = function () {
             enemyUnspawnedPool.unshift(this.enemiesInPlay.splice(i, 1)[0]);
 
             this.mesh.remove(enemy.mesh);
+            game.health -=10;
+            var selectedObject = scene.getObjectByName("HealthBar");
+            scene.remove(selectedObject);
+            var healthBarText = 'Health: ' + game.health;
+            addText(healthBarText);
             game.spaceshipColSpeedX = 100 * changePos.x / len;
             game.spaceshipColSpeedY = 100 * changePos.y / len;
             //ambientLight.intensity = 3;
@@ -539,6 +547,7 @@ EnemyStack.prototype.rotateEnemy = function () {
 
             enemyUnspawnedPool.unshift(this.enemiesInPlay.splice(i, 1)[0]);
             this.mesh.remove(enemy.mesh);
+            
             i--;
 
         }
@@ -605,12 +614,13 @@ function updateDist(){
     //console.log(game.distance);
 }
 
-this.textMesh;
-function addText() {
+
+function addText(text) {
     var loader = new THREE.FontLoader();
     this.geometry;
+
     loader.load('../optimer_regular.typeface.json', function(font){
-        this.geometry = new THREE.TextGeometry( 'Health: 100', {
+        this.geometry = new THREE.TextGeometry( text, {
             font: font,
             size: 8,
             height: 5,
@@ -622,56 +632,59 @@ function addText() {
             bevelSegments: 0
         } );
         var material = new THREE.MeshBasicMaterial( { color: 0xff0055 } );
-        this.textMesh = new THREE.Mesh( this.geometry, material ) ;
-        this.textMesh.position.x = -30;
-        this.textMesh.position.y = 170;
-        this.textMesh.rotation.x = .4;
-        this.textMesh.position.z = -150;
+        textMesh = new THREE.Mesh( this.geometry, material ) ;
+        textMesh.position.x = -30;
+        textMesh.position.y = 170;
+        textMesh.rotation.x = .4;
+        textMesh.position.z = -150;
+        textMesh.name = "HealthBar";
+        scene.add(textMesh );
         
-        scene.add( this.textMesh );
-        //console.log(this.geometry);
     });
-    
-    //console.log("in add text");
-    
-    
+    return this.textMesh;
 }
 
 
 
 function loop() {
 
-    newTime = new Date().getTime();
-    deltaTime = newTime-oldTime;
-    oldTime = newTime;
+    if(game.status == "in play"){
+        newTime = new Date().getTime();
+        deltaTime = newTime-oldTime;
+        oldTime = newTime;
 
-    planet.mesh.rotation.z += .005;
-    space.mesh.rotation.z += 0.01;
-    
-    //test.mesh.rotation.z +=0.01;
-    //test.rotation.z +=0.01;
-    //enemyMesh.rotation.z += 0.05;
-    //enemyInArray.spawnEnemies();
-    updateShip();
-    updateDist();
-    spaceship.trail.mesh.rotation.y += .2;
+        planet.mesh.rotation.z += .005;
+        space.mesh.rotation.z += 0.01;
+        
+        //test.mesh.rotation.z +=0.01;
+        //test.rotation.z +=0.01;
+        //enemyMesh.rotation.z += 0.05;
+        //enemyInArray.spawnEnemies();
+        updateShip();
+        updateDist();
+        spaceship.trail.mesh.rotation.y += .2;
 
-    if (Math.floor(game.distance)%game.distanceForEnnemiesSpawn == 0 
-    && Math.floor(game.distance) > game.ennemyLastSpawn){
-        game.ennemyLastSpawn = Math.floor(game.distance);
-        //console.log("in loop");
-        enemiesStack.spawnEnemies();
+        if (Math.floor(game.distance)%game.distanceForEnnemiesSpawn == 0 
+        && Math.floor(game.distance) > game.ennemyLastSpawn){
+            game.ennemyLastSpawn = Math.floor(game.distance);
+            //console.log("in loop");
+            enemiesStack.spawnEnemies();
+        }
+        //var selectedObject = scene.getObjectByName("HealthBar");
+        // scene.remove(selectedObject);
+        // addText("Health: 90");
+        game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * .02;
+        game.speed = game.baseSpeed * game.planeSpeed;
+        //console.log(game.speed);
+        enemiesStack.rotateEnemy();
+
+        //document.getElementById("temp") = "i am a header";
+
+        if(game.health <= 0){
+            game.status = "Game Over";
+        }
+
+        renderer.render(scene, camera);
+        requestAnimationFrame(loop);
     }
-
-    game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * .02;
-    game.speed = game.baseSpeed * game.planeSpeed;
-    //console.log(game.speed);
-    enemiesStack.rotateEnemy();
-
-    //document.getElementById("temp") = "i am a header";
-
-
-    renderer.render(scene, camera);
-    requestAnimationFrame(loop);
-    
 }
