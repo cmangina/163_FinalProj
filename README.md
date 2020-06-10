@@ -21,8 +21,8 @@
 # knows for sure what happened. 
 
 
-#Charita Mangina:
-# I made the rocket using only the primitive shapes available to us
+# Charita Mangina:
+## I made the rocket using only the primitive shapes available to us
 # by three.js. The process was a little complex but overall fun. The two
 # main primitives the rocket is composed of are the Cylinder Geometry and 
 # the Box Geometry. By manuplulating the vertices for the Box Geometry, it 
