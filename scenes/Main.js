@@ -67,9 +67,9 @@ function init() {
     createPlanet();
     createSpace();
     createEnemy();
-    var healthBarText = 'Health: ' + game.health;
-    addText(healthBarText);
-    console.log(scene);
+    
+    addText("Health: 100", 170);
+    //console.log(scene);
     
     //add listener for mosue
     document.addEventListener('mousemove', handleMouseMove, false);
@@ -106,7 +106,6 @@ function createScene() {
         nearShip,
         farShip,
     );
-
     //camrea position
     camera.position.x = 0;
     //camera.position.z = 200;
@@ -637,14 +636,11 @@ function addText(text, y) {
         textMesh.position.y = y;
         textMesh.rotation.x = .4;
         textMesh.position.z = -150;
-        if(game.status != "Game Over"){
+        
             textMesh.name = "HealthBar";
-        }
-        else {
-            textMesh.name = "Not Health Bar";
-        }
+        
         scene.add(textMesh );
-        return this.textMesh;
+        //return this.textMesh;
     });
     
 }
@@ -695,8 +691,6 @@ function loop() {
     }
     
     if(game.status == "Game Over" && ended == false){
-        var selectedObject = scene.getObjectByName("HealthBar");
-        scene.remove(selectedObject);
         addText("Game Over", 150);
         ended = true;
     }
