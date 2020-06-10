@@ -536,7 +536,7 @@ EnemyStack.prototype.rotateEnemy = function () {
             var selectedObject = scene.getObjectByName("HealthBar");
             scene.remove(selectedObject);
             var healthBarText = 'Health: ' + game.health;
-            addText(healthBarText);
+            addText(healthBarText, 170);
             game.spaceshipColSpeedX = 100 * changePos.x / len;
             game.spaceshipColSpeedY = 100 * changePos.y / len;
             //ambientLight.intensity = 3;
@@ -615,7 +615,7 @@ function updateDist(){
 }
 
 
-function addText(text) {
+function addText(text, y) {
     var loader = new THREE.FontLoader();
     this.geometry;
 
@@ -634,18 +634,23 @@ function addText(text) {
         var material = new THREE.MeshBasicMaterial( { color: 0xff0055 } );
         textMesh = new THREE.Mesh( this.geometry, material ) ;
         textMesh.position.x = -30;
-        textMesh.position.y = 170;
+        textMesh.position.y = y;
         textMesh.rotation.x = .4;
         textMesh.position.z = -150;
-        textMesh.name = "HealthBar";
+        if(game.status != "Game Over"){
+            textMesh.name = "HealthBar";
+        }
+        else {
+            textMesh.name = "Not Health Bar";
+        }
         scene.add(textMesh );
-        
+        return this.textMesh;
     });
-    return this.textMesh;
+    
 }
 
 
-
+var ended = false;
 function loop() {
 
     if(game.status == "in play"){
@@ -680,11 +685,21 @@ function loop() {
 
         //document.getElementById("temp") = "i am a header";
 
-        if(game.health <= 0){
+        if(game.health == 0){
             game.status = "Game Over";
+            var selectedObject = scene.getObjectByName("HealthBar");
+            scene.remove(selectedObject);
         }
 
-        renderer.render(scene, camera);
-        requestAnimationFrame(loop);
+        
     }
+    
+    if(game.status == "Game Over" && ended == false){
+        var selectedObject = scene.getObjectByName("HealthBar");
+        scene.remove(selectedObject);
+        addText("Game Over", 150);
+        ended = true;
+    }
+    renderer.render(scene, camera);
+    requestAnimationFrame(loop);
 }
