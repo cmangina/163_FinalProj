@@ -1,0 +1,5 @@
+dir_to_ignore/three.js-master/
+
+
+#exclude everything 
+three.js-master/*
