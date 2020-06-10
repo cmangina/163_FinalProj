@@ -32,3 +32,18 @@
 ## objects were encapsulated under a 3d object so we can move rocket as a whole.
 ## I also helped create the enemy object using another Three.js primitive and this was 
 ## to resembles asteroids the ship must avoid.
+
+# Gavril Tango:
+# I did more or less the same thing Charita did. I utilized the primitive shapes
+# offered to us by three.js to implement the different objects we see in the game.
+# I first created the Asteriods that are seen spinning around the world using the
+# Dodecahedron Geometry and a basic phong material mesh. This basically the same
+# way I created the star background as well. Other than that, I basically did a 
+# little house keeping. I changed all the colors around for the planet, and the 
+# entire background as well as the space ship. I helped a little with making the
+# spaceship by making the wings face the correct way and look like wings, also
+# adding the tail wing to look more like a NASA space ship. I also began started
+# spaceships trail that we see spinning, but I only created the particles. I dont
+# know who actually implemented the spinning part. I wanted to make it so that the
+# particles would actual spawn and then over time fade out, but I couldnt figure it
+# out with the time crunch I had.
