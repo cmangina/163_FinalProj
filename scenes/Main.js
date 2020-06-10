@@ -67,9 +67,11 @@ function init() {
     createPlanet();
     createSpace();
     createEnemy();
-
+    addText();
     //add listener for mosue
     document.addEventListener('mousemove', handleMouseMove, false);
+
+    //this.add.text
 
     //start a loop to change the positions of the objects and render the scene every frame
     loop();
@@ -433,7 +435,7 @@ function createSpaceShip() {
     spaceship.position.y = 100;
     spaceship.position.z = -100;
     spaceship.rotation.z = 1.5708;
-    console.log(spaceship.mesh);
+
     scene.add(spaceship);
 }
 
@@ -603,6 +605,40 @@ function updateDist(){
     //console.log(game.distance);
 }
 
+this.textMesh;
+function addText() {
+    var loader = new THREE.FontLoader();
+    this.geometry;
+    loader.load('../optimer_regular.typeface.json', function(font){
+        this.geometry = new THREE.TextGeometry( 'Health: 100', {
+            font: font,
+            size: 8,
+            height: 5,
+            curveSegments: 12,
+            bevelEnabled: false,
+            bevelThickness: 1,
+            bevelSize: 0,
+            bevelOffset: 0,
+            bevelSegments: 0
+        } );
+        var material = new THREE.MeshBasicMaterial( { color: 0xff0055 } );
+        this.textMesh = new THREE.Mesh( this.geometry, material ) ;
+        this.textMesh.position.x = -30;
+        this.textMesh.position.y = 170;
+        this.textMesh.rotation.x = .4;
+        this.textMesh.position.z = -150;
+        
+        scene.add( this.textMesh );
+        //console.log(this.geometry);
+    });
+    
+    //console.log("in add text");
+    
+    
+}
+
+
+
 function loop() {
 
     newTime = new Date().getTime();
@@ -631,6 +667,9 @@ function loop() {
     game.speed = game.baseSpeed * game.planeSpeed;
     //console.log(game.speed);
     enemiesStack.rotateEnemy();
+
+    //document.getElementById("temp") = "i am a header";
+
 
     renderer.render(scene, camera);
     requestAnimationFrame(loop);
