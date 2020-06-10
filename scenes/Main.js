@@ -1,13 +1,9 @@
 //color pallete, can be changed, I just wanted to add something so it looks spacey
 var Colors = {
-    darkBlue: 0x2b2662,
-    lightBlue: 0x4c63d9,
-    lightPurple: 0x543972,
     lightBrown: 0xa5682a,
     black: 0x040404,
 }
 
-////
 var game;
 var deltaTime = 0;
 var newTime = new Date().getTime();
@@ -69,12 +65,9 @@ function init() {
     createEnemy();
     
     addText("Health: 100", 170);
-    //console.log(scene);
     
     //add listener for mosue
     document.addEventListener('mousemove', handleMouseMove, false);
-
-    //this.add.text
 
     //start a loop to change the positions of the objects and render the scene every frame
     loop();
@@ -108,7 +101,6 @@ function createScene() {
     );
     //camrea position
     camera.position.x = 0;
-    //camera.position.z = 200;
     camera.position.y = 100;
 
     //renderer
@@ -168,8 +160,6 @@ Planet = function () {
     //planet material, maybe shouldnt be transparent but well see
     var mat = new THREE.MeshPhongMaterial({
         color: Colors.lightBrown,
-        //transparent: true,
-        //opacity: .8,
         flatShading: true,
     });
 
@@ -210,7 +200,6 @@ spaceBackground = function () {
     this.asteroidAmount = 40;
     this.asteroidArray = [];
     var stepAngle = Math.PI * 2 / this.asteroidAmount;
-    //console.log("in space background");
     for (var i = 0; i < this.asteroidAmount; i++) {
         var roid = new Asteroid();
         this.asteroidArray.push(roid);
@@ -256,8 +245,6 @@ starBackground = function (){
         star.mesh.position.x = Math.cos(angle) * height;
         star.mesh.position.z = angle + Math.PI/2;
         star.mesh.position.z = -800;
-        //var size = Math.floor((Math.random() * 1.0) + 0.3);
-        //star.mesh.scale.set(size,size,size);
         this.mesh.add(star.mesh);
     }
 }
@@ -322,56 +309,39 @@ spaceshipTrail = function () {
 }
 
 var Spaceship = function () {
-    //this.mesh = new THREE.Object3D();
     var rocketModel = new THREE.Object3D();
-
-
-    //const geometry = new THREE.CylinderBufferGeometry(
-    //  radiusTop, radiusBottom, height, radialSegments);
 
     var rocketBody = new THREE.CylinderGeometry(11, 14, 20, 8);
     var rocketBodymaterial = new THREE.MeshPhongMaterial({ color: 0xe6e6e6 });
     var body = new THREE.Mesh(rocketBody, rocketBodymaterial);
-    //scene.add(body);
 
-    //this.mesh.add(body);
     rocketModel.add(body);
     var rocketBase = new THREE.CylinderGeometry(13, 12, 4, 8);
     var rocketBasematerial = new THREE.MeshPhongMaterial({ color: 0xe6e6e6 });
     var baseRocket = new THREE.Mesh(rocketBase, rocketBasematerial);
     baseRocket.position.y = -10;
-    //scene.add(baseRocket);
-    //this.mesh.add(baseRocket); 
     rocketModel.add(baseRocket);
     var rocketBottom = new THREE.CylinderGeometry(10, 8, 4, 8);
     var rocketBottommaterial = new THREE.MeshPhongMaterial({ color: 0x323232 });
     var bottom = new THREE.Mesh(rocketBottom, rocketBottommaterial);
     bottom.position.y = -14;
-    //scene.add(bottom);
-    //this.mesh.add(bottom);
     rocketModel.add(bottom);
 
     var rocketTop = new THREE.CylinderGeometry(10, 11, 8, 8);
     var rocketTopmaterial = new THREE.MeshPhongMaterial({ color: 0x323232 });
     var topRocket = new THREE.Mesh(rocketTop, rocketTopmaterial);
     topRocket.position.y = 10;
-    //scene.add(topRocket);
-    //this.mesh.add(topRocket);
     rocketModel.add(topRocket);
     var rocketNose = new THREE.CylinderGeometry(6, 10, 10, 8);
     var rocketNosematerial = new THREE.MeshPhongMaterial({ color: 0x323232 });
     var nose = new THREE.Mesh(rocketNose, rocketNosematerial);
     nose.position.y = 17;
-    //scene.add(nose);
-    //this.mesh.add(nose);
     rocketModel.add(nose);
 
     var rocketTip = new THREE.CylinderGeometry(1, 6, 5, 8);
     var rocketTipmaterial = new THREE.MeshPhongMaterial({ color: 0x323232 });
     var tip = new THREE.Mesh(rocketTip, rocketTipmaterial);
     tip.position.y = 24;
-    //scene.add(tip);
-    //this.mesh.add(tip);
     rocketModel.add(tip);
     //const geometry = new THREE.BoxBufferGeometry(width, height, depth);
     // depth = thickness of wing 
@@ -423,10 +393,6 @@ var Spaceship = function () {
     rocketModel.trail = new spaceshipTrail;
     rocketModel.add(rocketModel.trail.mesh);
 
-    // var asteroid = new Asteroid;
-    // asteroid.mesh.position.x = 70;
-    // rocketModel.add(asteroid.mesh);
-
     return rocketModel;
 }
 
@@ -452,25 +418,13 @@ Enemy = function () {
 
 //var test;
 function createEnemy() {
-
-    // test = new Enemy();
-    // //enemy.scale.set(.25, .25, .25);
-    // test.mesh.position.y = 100;
-    // test.mesh.position.z = -100;
-    // test.mesh.position.x = 50;
-    // test.mesh.rotation.z = 1.5708;
-    //console.log(test.mesh)
-    // scene.add(test.mesh);
     for(let i = 0; i < 10; i++){
         var enemy = new Enemy();
         enemyUnspawnedPool.push(enemy);
     }
     enemiesStack = new EnemyStack();
-    //console.log(EnemyStack.keys(obj));
     scene.add(enemiesStack.mesh);
 }
-    //var enemyObj = new THREE.Object3D();
-    //enemyObj.enemiesOut = [];
 
 EnemyStack = function(){
     this.mesh = new THREE.Object3D();
@@ -493,19 +447,13 @@ EnemyStack.prototype.spawnEnemies = function () {
         }
         enemy.angle = -(n * 0.1);
         enemy.distance = game.planetRadius + game.spaceshipInitialHeight + (-1 + Math.random() * 2) * (game.spaceshipAmpHeight - 20);
-        //console.log(window.innerWidth + " " + window.innerHeight);
-        enemy.mesh.position.y = 50//-game.planetRadius + Math.sin(enemy.angle) * enemy.distance;
-        enemy.mesh.position.x = 50//Math.cos(enemy.angle) * enemy.distance;
+        enemy.mesh.position.y = 50
+        enemy.mesh.position.x = 50
         enemy.mesh.position.z = -100;
-        //console.log(enemy.mesh.position);
-        //nemyObj.add(enemy.mesh);
-        //enemyObj.enemiesOut.push(enemy);
         this.mesh.add(enemy.mesh);
 	    this.enemiesInPlay.push(enemy);
     }
 }
-
-//spawnEnemies();
 
 
 EnemyStack.prototype.rotateEnemy = function () {
@@ -522,12 +470,9 @@ EnemyStack.prototype.rotateEnemy = function () {
         enemy.mesh.rotation.z += Math.random() * .5;
         enemy.mesh.rotation.y = Math.random() * .5;
 
-//console.log(spaceship.mesh);
-//console.log(enemy.mesh);
         var changePos = spaceship.position.clone().sub(enemy.mesh.position.clone());
         var len = changePos.length();
         if (len < game.enemyDistanceTolerance) {
-            //rticleCount.spawnparticles(enemy.position.clone(), 10, 0xff0000,3);
             enemyUnspawnedPool.unshift(this.enemiesInPlay.splice(i, 1)[0]);
 
             this.mesh.remove(enemy.mesh);
@@ -538,8 +483,6 @@ EnemyStack.prototype.rotateEnemy = function () {
             addText(healthBarText, 170);
             game.spaceshipColSpeedX = 100 * changePos.x / len;
             game.spaceshipColSpeedY = 100 * changePos.y / len;
-            //ambientLight.intensity = 3;
-            //console.log("you lost health");
             i--;
 
         } else if (enemy.angle > Math.PI) {
@@ -580,14 +523,12 @@ function handleMouseMove(event) {
 
 function updateShip() {
     game.planeSpeed = normalize(mousePos.x,-.5,.5,game.planeMinSpeed, game.planeMaxSpeed);
-    //console.log(game.planeSpeed);
     var targetY = normalize(mousePos.y, -.75, .75, 25, 175);
     var targetX = normalize(mousePos.x, -.75, .75, -100, 100);
 
     // Move the plane at each frame by adding a fraction of the remaining distance
     spaceship.position.y += (targetY - spaceship.position.y) * 0.05;
     spaceship.position.x = targetX;
-    //console.log(spaceship.position);
 
     // Rotate the plane proportionally to the remaining distance
     spaceship.rotation.z = (targetY - spaceship.position.y) * 0.0128 - 1.5708;
@@ -605,12 +546,7 @@ function normalize(v, vmin, vmax, tmin, tmax) {
 }
 
 function updateDist(){
-    // console.log(game.distance);
-    // console.log(game.speed);
-    //console.log(deltaTime);
-    // console.log(game.speedOverDist);
     game.distance += game.speed*deltaTime*game.speedOverDist;
-    //console.log(game.distance);
 }
 
 
@@ -640,7 +576,6 @@ function addText(text, y) {
             textMesh.name = "HealthBar";
         
         scene.add(textMesh );
-        //return this.textMesh;
     });
     
 }
@@ -657,10 +592,6 @@ function loop() {
         planet.mesh.rotation.z += .005;
         space.mesh.rotation.z += 0.01;
         
-        //test.mesh.rotation.z +=0.01;
-        //test.rotation.z +=0.01;
-        //enemyMesh.rotation.z += 0.05;
-        //enemyInArray.spawnEnemies();
         updateShip();
         updateDist();
         spaceship.trail.mesh.rotation.y += .2;
@@ -668,18 +599,11 @@ function loop() {
         if (Math.floor(game.distance)%game.distanceForEnnemiesSpawn == 0 
         && Math.floor(game.distance) > game.ennemyLastSpawn){
             game.ennemyLastSpawn = Math.floor(game.distance);
-            //console.log("in loop");
             enemiesStack.spawnEnemies();
         }
-        //var selectedObject = scene.getObjectByName("HealthBar");
-        // scene.remove(selectedObject);
-        // addText("Health: 90");
         game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * .02;
         game.speed = game.baseSpeed * game.planeSpeed;
-        //console.log(game.speed);
         enemiesStack.rotateEnemy();
-
-        //document.getElementById("temp") = "i am a header";
 
         if(game.health == 0){
             game.status = "Game Over";
